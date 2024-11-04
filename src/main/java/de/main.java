@@ -5,12 +5,13 @@ import de.bs.hausfix.dao.ReadingDAO;
 import de.bs.hausfix.db.DatabaseConnection;
 import de.bs.hausfix.model.*;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.Properties;
-import java.util.UUID;
-import java.time.LocalDate;
 import java.util.List;
+import java.time.LocalDate;
 
-public class Main {
+public class main { // Klassenname sollte großgeschrieben werden
     public static void main(String[] args) {
         try {
             // Properties für die Datenbankverbindung laden
@@ -112,25 +113,22 @@ public class Main {
 
     private static Properties loadDatabaseProperties() {
         Properties properties = new Properties();
-        String username = System.getProperty("user.name");
 
         try {
-            // Versuche zuerst, die Properties aus dem Home-Verzeichnis zu laden
-            String homeDir = System.getProperty("user.home");
-            java.nio.file.Path propPath = java.nio.file.Paths.get(homeDir, "db.properties");
+            // Lade direkt aus dem resources Verzeichnis
+            InputStream input = main.class.getClassLoader().getResourceAsStream("database.properties");
 
-            if (java.nio.file.Files.exists(propPath)) {
-                properties.load(new java.io.FileInputStream(propPath.toFile()));
-            } else {
-                // Wenn nicht im Home-Verzeichnis, dann aus dem Classpath laden
-                properties.load(Main.class.getResourceAsStream("/db.properties"));
+            if (input == null) {
+                throw new RuntimeException("database.properties nicht gefunden im Classpath");
             }
+
+            properties.load(input);
 
             // Überprüfe, ob alle erforderlichen Properties vorhanden sind
             String[] requiredProps = {
-                    username + ".db.url",
-                    username + ".db.user",
-                    username + ".db.pw"
+                    "mac" + ".db.url",
+                    "mac" + ".db.user",
+                    "mac" + ".db.pw"
             };
 
             for (String prop : requiredProps) {
@@ -140,7 +138,8 @@ public class Main {
             }
 
             return properties;
-        } catch (Exception e) {
+
+        } catch (IOException e) {
             throw new RuntimeException("Fehler beim Laden der Datenbank-Properties", e);
         }
     }
