@@ -1,0 +1,11 @@
+de/bs/hausfix/dao/ReadingDAO.class
+de/bs/hausfix/db/IDatabaseConnection.class
+de/bs/hausfix/model/IReading.class
+de/bs/hausfix/model/IID.class
+de/bs/hausfix/model/Gender.class
+de/bs/hausfix/db/DatabaseConnection.class
+de/bs/hausfix/dao/CustomerDAO.class
+de/bs/hausfix/model/Reading.class
+de/bs/hausfix/model/ICustomer.class
+de/bs/hausfix/model/Customer.class
+de/bs/hausfix/model/KindOfMeter.class

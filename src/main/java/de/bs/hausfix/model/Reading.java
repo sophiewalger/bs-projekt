@@ -1,3 +1,8 @@
+package de.bs.hausfix.model;
+
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.util.UUID;
 
 public class Reading implements IReading {
     private UUID id;
