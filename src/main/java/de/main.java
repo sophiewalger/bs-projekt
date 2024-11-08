@@ -126,9 +126,9 @@ public class main { // Klassenname sollte großgeschrieben werden
 
             // Überprüfe, ob alle erforderlichen Properties vorhanden sind
             String[] requiredProps = {
-                    "mac" + ".db.url",
-                    "mac" + ".db.user",
-                    "mac" + ".db.pw"
+                    "DE085171" + ".db.url",
+                    "DE085171" + ".db.user",
+                    "DE085171" + ".db.pw"
             };
 
             for (String prop : requiredProps) {

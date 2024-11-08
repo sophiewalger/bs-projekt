@@ -28,12 +28,11 @@ public class DatabaseConnection implements IDatabaseConnection {
 
     @Override
     public IDatabaseConnection openConnection(Properties properties) {
-        String username = System.getProperty("user.name");
-
         try {
-            String url = properties.getProperty(username + ".db.url");
-            String user = properties.getProperty(username + ".db.user");
-            String password = properties.getProperty(username + ".db.pw");
+            String url = properties.getProperty(properties.getProperty("user.name") + ".db.url");
+            String user = properties.getProperty(properties.getProperty("user.name") + ".db.user");
+            String password = properties.getProperty(properties.getProperty("user.name") + ".db.pw");
+            System.out.println(url  +" "  +  " "+user + " "+password);
 
             if (url == null || user == null || password == null) {
                 throw new IllegalStateException("Database properties not found");
@@ -101,7 +100,7 @@ public class DatabaseConnection implements IDatabaseConnection {
     }
 
     public Connection getConnection() {
-        return connection;
+        return connection; // Diese Methode gibt die Verbindung zurück
     }
 
     private String loadSchemaFile() throws IOException {

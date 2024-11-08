@@ -1,9 +1,10 @@
-package src.test.java.de.bs.tests.DatabaseConnectionTest.java;
+package tests;
 
+import de.bs.hausfix.db.IDatabaseConnection;
 import org.junit.jupiter.api.*;
 import java.sql.Connection;
 import java.util.Properties;
-
+import de.bs.hausfix.db.DatabaseConnection;
 import static org.junit.jupiter.api.Assertions.*;
 
 class DatabaseConnectionTest {
@@ -13,10 +14,11 @@ class DatabaseConnectionTest {
     @BeforeAll
     static void setUpClass() {
         testProperties = new Properties();
-        String username = System.getProperty("user.name");
-        testProperties.setProperty(username + ".db.url", "jdbc:mariadb://localhost:3306/hausfix_test");
+        String username = System.getProperty("user.name"); // Verwenden Sie "user.name"
+        testProperties.setProperty("user.name", username); // Setzen Sie den Benutzernamen
+        testProperties.setProperty(username + ".db.url", "jdbc:mariadb://localhost:3306/hausfix");
         testProperties.setProperty(username + ".db.user", "root");
-        testProperties.setProperty(username + ".db.pw", "root");
+        testProperties.setProperty(username + ".db.pw", "1234");
     }
 
     @BeforeEach
@@ -79,19 +81,10 @@ class DatabaseConnectionTest {
 
     @Test
     void testDatabaseOperationsSequence() {
-        // Test the complete lifecycle of database operations
         dbConnection.openConnection(testProperties);
-
-        // Create tables
         dbConnection.createAllTables();
-
-        // Truncate tables
         dbConnection.truncateAllTables();
-
-        // Remove tables
         dbConnection.removeAllTables();
-
-        // Close connection
         dbConnection.closeConnection();
     }
 

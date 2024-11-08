@@ -1,5 +1,8 @@
-package src.test.java.de.bs.tests.ReadingTest.java;
+package tests;
 
+import de.bs.hausfix.model.Customer;
+import de.bs.hausfix.model.KindOfMeter;
+import de.bs.hausfix.model.Reading;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import java.time.LocalDate;
@@ -22,7 +25,7 @@ class ReadingTest {
     void testReadingProperties() {
         UUID id = UUID.randomUUID();
         String meterId = "METER123";
-        KindOfMeter kindOfMeter = KindOfMeter.ELECTRICITY;
+        KindOfMeter kindOfMeter = KindOfMeter.WASSER;
         double meterCount = 1234.56;
         LocalDate dateOfReading = LocalDate.now();
         boolean substitute = false;

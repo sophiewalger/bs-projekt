@@ -1,5 +1,7 @@
-package src.test.java.de.bs.tests.ReadingDAOTest.java;
+package tests;
 
+import de.bs.hausfix.dao.CustomerDAO;
+import de.bs.hausfix.dao.ReadingDAO;
 import de.bs.hausfix.db.DatabaseConnection;
 import de.bs.hausfix.model.*;
 import org.junit.jupiter.api.*;
@@ -22,9 +24,9 @@ class ReadingDAOTest {
     static void setUp() {
         // Initialize database connection
         Properties props = new Properties();
-        props.setProperty(System.getProperty("user.name") + ".db.url", "jdbc:mariadb://localhost:3306/hausfix_test");
-        props.setProperty(System.getProperty("user.name") + ".db.user", "root");
-        props.setProperty(System.getProperty("user.name") + ".db.pw", "root");
+        props.setProperty(System.getProperty("DE085171") + ".db.url", "jdbc:mariadb://localhost:3306/hausfix");
+        props.setProperty(System.getProperty("DE085171") + ".db.user", "root");
+        props.setProperty(System.getProperty("DE085171") + ".db.pw", "1234");
 
         dbConnection = DatabaseConnection.getInstance();
         dbConnection.openConnection(props);
@@ -44,13 +46,13 @@ class ReadingDAOTest {
         testCustomer.setFirstName("Max");
         testCustomer.setLastName("Mustermann");
         testCustomer.setBirthDate(LocalDate.of(1990, 1, 1));
-        testCustomer.setGender(Gender.MALE);
+        testCustomer.setGender(Gender.M);
         customerDAO.create(testCustomer);
 
         // Create test reading
         testReading = new Reading();
         testReading.setMeterId("METER123");
-        testReading.setKindOfMeter(KindOfMeter.ELECTRICITY);
+        testReading.setKindOfMeter(KindOfMeter.WASSER);
         testReading.setMeterCount(1234.56);
         testReading.setDateOfReading(LocalDate.now());
         testReading.setSubstitute(false);
@@ -119,7 +121,7 @@ class ReadingDAOTest {
         // Create second test reading
         IReading secondReading = new Reading();
         secondReading.setMeterId("METER456");
-        secondReading.setKindOfMeter(KindOfMeter.WATER);
+        secondReading.setKindOfMeter(KindOfMeter.WASSER);
         secondReading.setMeterCount(789.12);
         secondReading.setDateOfReading(LocalDate.now());
         secondReading.setSubstitute(true);
