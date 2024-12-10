@@ -7,7 +7,7 @@ CREATE TABLE IF NOT EXISTS customers (
     first_name VARCHAR(255) NOT NULL,
     last_name VARCHAR(255) NOT NULL,
     birth_date DATE NOT NULL,
-    gender ENUM('D', 'M', 'U', 'W') NOT NULL
+    gender ENUM('D', 'M', 'U','F' , 'W') NOT NULL
 );
 
 CREATE TABLE IF NOT EXISTS readings (

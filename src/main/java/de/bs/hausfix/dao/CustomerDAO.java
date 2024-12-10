@@ -26,7 +26,7 @@ public class CustomerDAO {
             stmt.setString(2, customer.getFirstName());
             stmt.setString(3, customer.getLastName());
             stmt.setDate(4, Date.valueOf(customer.getBirthDate()));
-            stmt.setString(5, customer.getGender().toString());
+            stmt.setString(5, customer.getGender().name());
 
             stmt.executeUpdate();
         } catch (SQLException e) {

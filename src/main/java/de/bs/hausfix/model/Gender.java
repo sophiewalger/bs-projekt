@@ -4,5 +4,6 @@ public enum Gender {
     D,
     M,
     U,
-    F, W
+    F,
+    W
 }
