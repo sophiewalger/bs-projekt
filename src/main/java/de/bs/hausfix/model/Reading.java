@@ -1,23 +1,49 @@
 package de.bs.hausfix.model;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 import java.time.LocalDate;
+
+import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonTypeInfo;
+import com.fasterxml.jackson.annotation.JsonTypeName;
+
+import jakarta.validation.constraints.NotNull;
+
+
 import java.time.format.DateTimeFormatter;
 import java.util.UUID;
 
+@JsonTypeInfo(include = JsonTypeInfo.As.WRAPPER_OBJECT, use = JsonTypeInfo.Id.NAME)
+@JsonTypeName(value = "reading")
 public class Reading implements IReading {
+    @JsonProperty("id")
     private UUID id;
+    @JsonProperty("meterId")
+    @NotNull
     private String meterId;
+    @JsonProperty("kindOfMeter")
+    @NotNull
     private KindOfMeter kindOfMeter;
+    @JsonProperty("meterCount")
+    @NotNull
     private Double meterCount;
+    @JsonProperty("dateOfReading")
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd.MM.yyyy")
     private LocalDate dateOfReading;
+    @JsonProperty("substitute")
     private Boolean substitute;
+    @JsonProperty("comment")
     private String comment;
+    @JsonProperty("customer")
     private ICustomer customer;
+
 
     @Override
     public UUID getId() {
         return id;
     }
+
+
 
     @Override
     public void setId(UUID id) {
@@ -47,6 +73,11 @@ public class Reading implements IReading {
     @Override
     public Double getMeterCount() {
         return meterCount;
+    }
+
+    @Override
+    public void setId(String id) {
+
     }
 
     @Override

@@ -1,14 +1,35 @@
 package de.bs.hausfix.model;
 
-import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
-import java.util.UUID;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
+import java.time.LocalDate;
+import java.util.UUID;
+import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonTypeInfo;
+import com.fasterxml.jackson.annotation.JsonTypeName;
+
+import jakarta.validation.constraints.NotNull;
+
+@JsonTypeInfo(include = JsonTypeInfo.As.WRAPPER_OBJECT, use = JsonTypeInfo.Id.NAME)
+@JsonTypeName(value = "customer")
 public class Customer implements ICustomer {
+    @JsonProperty("id")
     private UUID id;
+
+    @JsonProperty("firstName")
+    @NotNull
     private String firstName;
+
+    @JsonProperty("lastName")
+    @NotNull
     private String lastName;
+
+    @JsonProperty("birthDate")
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd.MM.yyyy")
     private LocalDate birthDate;
+
+    @JsonProperty("gender")
+    @NotNull
     private Gender gender;
 
     @Override

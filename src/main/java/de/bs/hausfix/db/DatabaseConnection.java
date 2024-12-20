@@ -29,9 +29,9 @@ public class DatabaseConnection implements IDatabaseConnection {
     @Override
     public IDatabaseConnection openConnection(Properties properties) {
         try {
-            String url = properties.getProperty(properties.getProperty("user.name") + ".db.url");
-            String user = properties.getProperty(properties.getProperty("user.name") + ".db.user");
-            String password = properties.getProperty(properties.getProperty("user.name") + ".db.pw");
+            String url = properties.getProperty("user.name" + ".db.url");
+            String user = properties.getProperty("user.name" + ".db.user");
+            String password = properties.getProperty("user.name" + ".db.pw");
             System.out.println(url  +" "  +  " "+user + " "+password);
 
             if (url == null || user == null || password == null) {

@@ -16,6 +16,9 @@ public interface IReading extends IID {
     LocalDate getDateOfReading();
     KindOfMeter getKindOfMeter();
     Double getMeterCount();
+
+    void setId(String id);
+
     String getMeterId();
     Boolean getSubstitute();
     

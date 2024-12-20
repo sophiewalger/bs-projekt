@@ -4,6 +4,7 @@ import de.bs.hausfix.dao.CustomerDAO;
 import de.bs.hausfix.dao.ReadingDAO;
 import de.bs.hausfix.db.DatabaseConnection;
 import de.bs.hausfix.model.*;
+import de.bs.hausfix.server.Server;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -26,18 +27,23 @@ public class main { // Klassenname sollte großgeschrieben werden
 
             // DAOs initialisieren
             CustomerDAO customerDAO = new CustomerDAO(dbConnection);
+            //CustomerDAO customerDAO = new CustomerDAO();
             ReadingDAO readingDAO = new ReadingDAO(dbConnection, customerDAO);
 
             // Demo der CRUD-Operationen
-            demonstrateCRUDOperations(customerDAO, readingDAO);
+            // demonstrateCRUDOperations(customerDAO, readingDAO);
+
+            Server.startServer("http://localhost:8080/resources");
 
             // Verbindung schließen
-            dbConnection.closeConnection();
+            // dbConnection.closeConnection();
 
         } catch (Exception e) {
             System.err.println("Ein Fehler ist aufgetreten: " + e.getMessage());
             e.printStackTrace();
         }
+
+
     }
 
     private static void demonstrateCRUDOperations(CustomerDAO customerDAO, ReadingDAO readingDAO) {
@@ -126,9 +132,9 @@ public class main { // Klassenname sollte großgeschrieben werden
 
             // Überprüfe, ob alle erforderlichen Properties vorhanden sind
             String[] requiredProps = {
-                    "DE085171" + ".db.url",
-                    "DE085171" + ".db.user",
-                    "DE085171" + ".db.pw"
+                    "user.name" + ".db.url",
+                    "user.name" + ".db.user",
+                    "user.name" + ".db.pw"
             };
 
             for (String prop : requiredProps) {

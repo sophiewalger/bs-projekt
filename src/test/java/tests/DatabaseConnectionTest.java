@@ -19,6 +19,7 @@ class DatabaseConnectionTest {
         testProperties.setProperty(username + ".db.url", "jdbc:mariadb://localhost:3306/hausfix");
         testProperties.setProperty(username + ".db.user", "root");
         testProperties.setProperty(username + ".db.pw", "1234");
+        System.out.println(testProperties);
     }
 
     @BeforeEach
