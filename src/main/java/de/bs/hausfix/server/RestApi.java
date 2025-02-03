@@ -27,7 +27,7 @@ public class RestApi {
     @Path("/customers") // Pfad für alle Kunden
     @Produces(MediaType.APPLICATION_JSON)
     public List<Customer> getAllCustomers() {
-        return CustomerDAO;}
+        return customers;}
 
     // GET: Einen bestimmten Kunden abrufen
     @GET

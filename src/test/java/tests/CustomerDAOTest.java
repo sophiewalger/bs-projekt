@@ -33,7 +33,7 @@ class CustomerDAOTest {
         dbConnection.removeAllTables();
         dbConnection.createAllTables();
 
-        customerDAO = new CustomerDAO(dbConnection);
+        var customerDAO =  CustomerDAO.getInstance();
     }
 
     @BeforeEach

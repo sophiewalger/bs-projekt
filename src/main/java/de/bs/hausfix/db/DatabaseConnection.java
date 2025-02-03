@@ -29,10 +29,10 @@ public class DatabaseConnection implements IDatabaseConnection {
     @Override
     public IDatabaseConnection openConnection(Properties properties) {
         try {
-            String url = properties.getProperty("user.name" + ".db.url");
+            // Hier wird die Verbindung zur spezifischen Datenbank hergestellt
+            String url = properties.getProperty("user.name" + ".db.url") ;//Füge den Datenbanknamen hinzu
             String user = properties.getProperty("user.name" + ".db.user");
             String password = properties.getProperty("user.name" + ".db.pw");
-            System.out.println(url  +" "  +  " "+user + " "+password);
 
             if (url == null || user == null || password == null) {
                 throw new IllegalStateException("Database properties not found");

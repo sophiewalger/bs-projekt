@@ -26,14 +26,14 @@ public class main { // Klassenname sollte großgeschrieben werden
             dbConnection.createAllTables();
 
             // DAOs initialisieren
-            CustomerDAO customerDAO = new CustomerDAO(dbConnection);
+            var customerDAO = CustomerDAO.getInstance();
             //CustomerDAO customerDAO = new CustomerDAO();
             ReadingDAO readingDAO = new ReadingDAO(dbConnection, customerDAO);
 
             // Demo der CRUD-Operationen
             // demonstrateCRUDOperations(customerDAO, readingDAO);
 
-            Server.startServer("http://localhost:8080/resources");
+            Server.startServer("http://localhost:3306/resources");
 
             // Verbindung schließen
             // dbConnection.closeConnection();

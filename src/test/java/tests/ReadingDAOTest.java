@@ -33,7 +33,7 @@ class ReadingDAOTest {
         dbConnection.removeAllTables();
         dbConnection.createAllTables();
 
-        customerDAO = new CustomerDAO(dbConnection);
+        var customerDAO = CustomerDAO.getInstance();
         readingDAO = new ReadingDAO(dbConnection, customerDAO);
     }
 
