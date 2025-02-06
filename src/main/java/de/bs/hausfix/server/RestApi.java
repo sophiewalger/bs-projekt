@@ -23,11 +23,26 @@ public class RestApi {
 //    public List<Customer> getAllCustomers() {
 //        return customers;
 //    }
+//    @GET
+//    @Path("/customers") // Pfad für alle Kunden
+//    @Produces(MediaType.APPLICATION_JSON)
+//    public List<Customer> getAllCustomers() {
+//        return customers;}
+
+    // GET: Alle Kunden abrufen
     @GET
-    @Path("/customers") // Pfad für alle Kunden
+    @Path("/customers")
     @Produces(MediaType.APPLICATION_JSON)
-    public List<Customer> getAllCustomers() {
-        return customers;}
+    public List<ICustomer> getAllCustomers() {
+        System.out.println("GET-Anfrage für alle Kunden empfangen");
+        List<ICustomer> customers = CustomerDAO.getInstance().readAll();
+        if (customers.isEmpty()) {
+            System.out.println("Keine Kunden gefunden.");
+        } else {
+            System.out.println("Anzahl der Kunden abgerufen: " + customers.size());
+        }
+        return customers;
+    }
 
     // GET: Einen bestimmten Kunden abrufen
     @GET

@@ -8,8 +8,20 @@ public interface ICustomer extends IID {
     void setBirthDate(LocalDate birthDate);
     void setGender(Gender gender);
 
+    // Neue Methoden für die zusätzlichen Felder
+    void setStreet(String street);
+    void setHouseNumber(String houseNumber);
+    void setPostcode(String postcode);
+    void setCity(String city);
+
     String getFirstName();
     String getLastName();
     LocalDate getBirthDate();
     Gender getGender();
+
+    // Neue Getter für die zusätzlichen Felder
+    String getStreet();
+    String getHouseNumber();
+    String getPostcode();
+    String getCity();
 }

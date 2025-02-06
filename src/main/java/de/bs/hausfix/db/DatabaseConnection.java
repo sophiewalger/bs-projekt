@@ -9,6 +9,7 @@ import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.Properties;
+import java.util.UUID;
 
 public class DatabaseConnection implements IDatabaseConnection {
     private static DatabaseConnection instance;
@@ -30,7 +31,7 @@ public class DatabaseConnection implements IDatabaseConnection {
     public IDatabaseConnection openConnection(Properties properties) {
         try {
             // Hier wird die Verbindung zur spezifischen Datenbank hergestellt
-            String url = properties.getProperty("user.name" + ".db.url") ;//Füge den Datenbanknamen hinzu
+            String url = properties.getProperty("user.name" + ".db.url");
             String user = properties.getProperty("user.name" + ".db.user");
             String password = properties.getProperty("user.name" + ".db.pw");
 
@@ -50,16 +51,38 @@ public class DatabaseConnection implements IDatabaseConnection {
 
     @Override
     public void createAllTables() {
-        try {
-            String schema = loadSchemaFile();
-            try (Statement stmt = connection.createStatement()) {
-                for (String sql : schema.split(";")) {
-                    if (!sql.trim().isEmpty()) {
-                        stmt.execute(sql);
-                    }
-                }
-            }
-        } catch (SQLException | IOException e) {
+        try (Statement stmt = connection.createStatement()) {
+            // Erstelle die Datenbank falls sie nicht existiert
+            stmt.execute("CREATE DATABASE IF NOT EXISTS hausfix_db");
+            stmt.execute("USE hausfix_db");
+
+            // Erstelle die customers Tabelle mit UUID
+            String createCustomersTable = """
+            CREATE TABLE IF NOT EXISTS customers (
+                id CHAR(36) PRIMARY KEY,
+                firstname VARCHAR(50),
+                lastname VARCHAR(50),
+                street VARCHAR(100),
+                housenumber VARCHAR(10),
+                postcode VARCHAR(10),
+                city VARCHAR(50)
+            )
+            """;
+            stmt.execute(createCustomersTable);
+
+            // Erstelle die readings Tabelle mit UUID und Fremdschlüssel zu customers
+            String createReadingsTable = """
+            CREATE TABLE IF NOT EXISTS readings (
+                id CHAR(36) PRIMARY KEY,
+                customer_id CHAR(36),
+                reading_date DATE,
+                meter_reading INT,
+                FOREIGN KEY (customer_id) REFERENCES customers(id)
+            )
+            """;
+            stmt.execute(createReadingsTable);
+
+        } catch (SQLException e) {
             throw new RuntimeException("Failed to create tables", e);
         }
     }
@@ -106,5 +129,10 @@ public class DatabaseConnection implements IDatabaseConnection {
     private String loadSchemaFile() throws IOException {
         Path schemaPath = Paths.get("src", "main", "resources", "schema.sql");
         return Files.readString(schemaPath);
+    }
+
+    // Methode zum Erstellen einer neuen UUID
+    public String generateUUID() {
+        return UUID.randomUUID().toString();
     }
 }

@@ -57,13 +57,18 @@ public class Server {
     private static final String PACKAGE_NAME = "de.bs.hausfix.server";
     private static HttpServer server;
 
-    public static void startServer(String url){
+    public static void startServer(String url) {
         System.out.println("Start server: " + url);
-        final ResourceConfig rc = new ResourceConfig()
-                .packages(PACKAGE_NAME)
-                .register(RestApi.class);
-        server = JdkHttpServerFactory.createHttpServer(URI.create(url), rc);
-        System.out.println("Ready for Requests....");
+        try {
+            final ResourceConfig rc = new ResourceConfig()
+                    .packages(PACKAGE_NAME)
+                    .register(RestApi.class);
+            server = JdkHttpServerFactory.createHttpServer(URI.create(url), rc);
+            System.out.println("Ready for Requests....");
+        } catch (Exception e) {
+            System.err.println("Fehler beim Starten des Servers: " + e.getMessage());
+            e.printStackTrace();
+        }
     }
 
     public static void stopServer(){
