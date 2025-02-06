@@ -16,9 +16,8 @@ import static org.junit.jupiter.api.Assertions.*;
 class ReadingDAOTest {
     private static DatabaseConnection dbConnection;
     private static ReadingDAO readingDAO;
-    private static CustomerDAO customerDAO;
     private static IReading testReading;
-    private static ICustomer testCustomer;
+
 
     @BeforeAll
     static void setUp() {
@@ -33,21 +32,13 @@ class ReadingDAOTest {
         dbConnection.removeAllTables();
         dbConnection.createAllTables();
 
-        var customerDAO = CustomerDAO.getInstance();
-        readingDAO = new ReadingDAO(dbConnection, customerDAO);
+        var readingDAO =  ReadingDAO.getInstance();
     }
 
     @BeforeEach
     void setUpEach() {
         dbConnection.truncateAllTables();
 
-        // Create test customer
-        testCustomer = new Customer();
-        testCustomer.setFirstName("Max");
-        testCustomer.setLastName("Mustermann");
-        testCustomer.setBirthDate(LocalDate.of(1990, 1, 1));
-        testCustomer.setGender(Gender.M);
-        customerDAO.create(testCustomer);
 
         // Create test reading
         testReading = new Reading();
@@ -57,7 +48,7 @@ class ReadingDAOTest {
         testReading.setDateOfReading(LocalDate.now());
         testReading.setSubstitute(false);
         testReading.setComment("Test reading");
-        testReading.setCustomer(testCustomer);
+
     }
 
     @Test
@@ -126,7 +117,6 @@ class ReadingDAOTest {
         secondReading.setDateOfReading(LocalDate.now());
         secondReading.setSubstitute(true);
         secondReading.setComment("Second test reading");
-        secondReading.setCustomer(testCustomer);
         readingDAO.create(secondReading);
 
         List<IReading> readings = readingDAO.readAll();

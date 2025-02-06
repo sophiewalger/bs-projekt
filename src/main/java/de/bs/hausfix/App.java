@@ -30,15 +30,7 @@ public class App {
             // Tabellen erstellen/aktualisieren
             dbConnection.createAllTables();
 
-            // DAOs initialisieren
-            customerDAO = new CustomerDAO();
-            readingDAO = new ReadingDAO(dbConnection, customerDAO);
-
-            // Jersey ResourceConfig erstellen
-            ResourceConfig config = new ResourceConfig();
-            config.register(HealthResource.class); // Registriere die Ressourcenklasse
-
-            Server.startServer("http://localhost:8123/rest");
+            Server.startServer("http://localhost:8823/rest");
 
         } catch (Exception e) {
             System.err.println("Ein Fehler ist aufgetreten: " + e.getMessage());

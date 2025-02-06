@@ -1,40 +1,45 @@
 package de.bs.hausfix.dao;
 
 import de.bs.hausfix.db.DatabaseConnection;
-import de.bs.hausfix.model.*;
+import de.bs.hausfix.model.IReading;
+import de.bs.hausfix.model.KindOfMeter;
+import de.bs.hausfix.model.Reading;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Properties;
 import java.util.UUID;
 
 public class ReadingDAO {
+    private static ReadingDAO instance; // Singleton-Instanz
     private final Connection connection;
-    private final CustomerDAO customerDAO;
 
-    public ReadingDAO(DatabaseConnection dbConnection, CustomerDAO customerDAO) {
-        this.connection = dbConnection.getConnection();
-        this.customerDAO = customerDAO;
+    // Privater Konstruktor
+    private ReadingDAO() {
+        DatabaseConnection dbConnection = DatabaseConnection.getInstance();
+        Properties properties = loadDatabaseProperties(); // Methode zum Laden der DB-Eigenschaften
+        dbConnection.openConnection(properties); // Verbindung öffnen
+        this.connection = dbConnection.getConnection(); // Verbindung abrufen
+    }
+
+    // Statische Methode zur Rückgabe der Singleton-Instanz
+    public static ReadingDAO getInstance() {
+        if (instance == null) {
+            instance = new ReadingDAO();
+        }
+        return instance;
     }
 
     public void create(IReading reading) {
-        // Ensure customer exists if provided
-        if (reading.getCustomer() != null) {
-            ICustomer existingCustomer = customerDAO.read(reading.getCustomer().getId());
-            if (existingCustomer == null) {
-                customerDAO.create(reading.getCustomer());
-            }
-        }
-
-        String sql = "INSERT INTO readings (id, meter_id, kind_of_meter, meter_count, date_of_reading, " +
-                "substitute, comment, customer_id) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+        String sql = "INSERT INTO readings (id, meter_reading, kind_of_meter, meter_count, reading_date, substitute, comment, customer_id) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
 
         try (PreparedStatement stmt = connection.prepareStatement(sql)) {
             if (reading.getId() == null) {
-                reading.setId(UUID.randomUUID());
+                reading.setId(UUID.randomUUID().toString());
             }
 
             stmt.setString(1, reading.getId().toString());
-            stmt.setString(2, reading.getMeterId());
+            stmt.setDouble(2, reading.getMeterCount()); // Assuming meter_reading corresponds to meter_count
             stmt.setString(3, reading.getKindOfMeter().toString());
             stmt.setDouble(4, reading.getMeterCount());
             stmt.setDate(5, Date.valueOf(reading.getDateOfReading()));
@@ -81,11 +86,11 @@ public class ReadingDAO {
     }
 
     public void update(IReading reading) {
-        String sql = "UPDATE readings SET meter_id = ?, kind_of_meter = ?, meter_count = ?, " +
-                "date_of_reading = ?, substitute = ?, comment = ?, customer_id = ? WHERE id = ?";
+        String sql = "UPDATE readings SET meter_reading = ?, kind_of_meter = ?, meter_count = ?, " +
+                "reading_date = ?, substitute = ?, comment = ?, customer_id = ? WHERE id = ?";
 
         try (PreparedStatement stmt = connection.prepareStatement(sql)) {
-            stmt.setString(1, reading.getMeterId());
+            stmt.setDouble(1, reading.getMeterCount()); // Assuming meter_reading corresponds to meter_count
             stmt.setString(2, reading.getKindOfMeter().toString());
             stmt.setDouble(3, reading.getMeterCount());
             stmt.setDate(4, Date.valueOf(reading.getDateOfReading()));
@@ -113,19 +118,28 @@ public class ReadingDAO {
 
     private IReading mapResultSetToReading(ResultSet rs) throws SQLException {
         IReading reading = new Reading();
-        reading.setId(UUID.fromString(rs.getString("id")));
-        reading.setMeterId(rs.getString("meter_id"));
-        reading.setKindOfMeter(KindOfMeter.valueOf(rs.getString("kind_of_meter")));
-        reading.setMeterCount(rs.getDouble("meter_count"));
-        reading.setDateOfReading(rs.getDate("date_of_reading").toLocalDate());
-        reading.setSubstitute(rs.getBoolean("substitute"));
-        reading.setComment(rs.getString("comment"));
+        reading.setId(rs.getString("id"));
+        reading.setMeterId(rs.getString("meter_reading")); // Change this to meter_reading
+  //      reading.setKindOfMeter(KindOfMeter.valueOf(rs.getString("kind_of_meter")));
+    //    reading.setMeterCount(rs.getDouble("meter_count"));
+        reading.setDateOfReading(rs.getDate("reading_date").toLocalDate()); // Change this to reading_date
+  //      reading.setSubstitute(rs.getBoolean("substitute"));
+ //       reading.setComment(rs.getString("comment"));
 
         String customerId = rs.getString("customer_id");
         if (customerId != null) {
-            reading.setCustomer(customerDAO.read(UUID.fromString(customerId)));
+            reading.setCustomer(CustomerDAO.getInstance().read(UUID.fromString(customerId)));
         }
 
         return reading;
+    }
+
+    // Methode zum Laden der Datenbank-Eigenschaften
+    private Properties loadDatabaseProperties() {
+        Properties properties = new Properties();
+        properties.setProperty("user.name.db.url", "jdbc:mariadb://localhost:3306/hausfix_db");
+        properties.setProperty("user.name.db.user", "root");
+        properties.setProperty("user.name.db.pw", "1234");
+        return properties;
     }
 }

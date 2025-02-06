@@ -1,5 +1,6 @@
 package de.bs.hausfix.server;
 import de.bs.hausfix.dao.CustomerDAO;
+import de.bs.hausfix.dao.ReadingDAO;
 import de.bs.hausfix.model.*;
 
 import jakarta.ws.rs.*;
@@ -16,20 +17,6 @@ public class RestApi {
     // Beispielhafte Datenbank (in der Realität würdest du eine echte Datenbank verwenden)
     private static List<Customer> customers = new ArrayList<>();
 
-    // GET: Alle Kunden abrufen
-//    @GET
-//    @Path("/customers")
-//    @Produces(MediaType.APPLICATION_JSON)
-//    public List<Customer> getAllCustomers() {
-//        return customers;
-//    }
-//    @GET
-//    @Path("/customers") // Pfad für alle Kunden
-//    @Produces(MediaType.APPLICATION_JSON)
-//    public List<Customer> getAllCustomers() {
-//        return customers;}
-
-    // GET: Alle Kunden abrufen
     @GET
     @Path("/customers")
     @Produces(MediaType.APPLICATION_JSON)
@@ -107,7 +94,9 @@ public class RestApi {
     @GET
     @Path("/readings")
     @Produces(MediaType.APPLICATION_JSON)
-    public List<Reading> getAllReadings() {
+    public List<IReading> getAllReadings() {
+        List<IReading> readings = ReadingDAO.getInstance().readAll();
+
         return readings;
     }
 
