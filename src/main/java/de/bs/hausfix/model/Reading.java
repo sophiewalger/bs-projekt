@@ -1,15 +1,14 @@
 package de.bs.hausfix.model;
+
 import com.fasterxml.jackson.annotation.JsonProperty;
-
-import java.time.LocalDate;
-
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import com.fasterxml.jackson.annotation.JsonTypeName;
 
+import de.bs.hausfix.dao.CustomerDAO;
 import jakarta.validation.constraints.NotNull;
 
-
+import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.UUID;
 
@@ -18,36 +17,45 @@ import java.util.UUID;
 public class Reading implements IReading {
     @JsonProperty("id")
     private UUID id;
-    @JsonProperty("meterId")
+
+    @JsonProperty("meter_reading")
     @NotNull
     private String meterId;
-    @JsonProperty("kindOfMeter")
+
+    @JsonProperty("kind_of_meter")
     @NotNull
     private KindOfMeter kindOfMeter;
-    @JsonProperty("meterCount")
+
+    @JsonProperty("meter_count")
     @NotNull
     private Double meterCount;
-    @JsonProperty("dateOfReading")
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd.MM.yyyy")
+
+    @JsonProperty("reading_date")
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
     private LocalDate dateOfReading;
+
     @JsonProperty("substitute")
     private Boolean substitute;
+
     @JsonProperty("comment")
     private String comment;
-    @JsonProperty("customer")
-    private ICustomer customer;
 
+    @JsonProperty("customer_id")
+    private String customerId; // Store customer ID as a String
 
     @Override
     public UUID getId() {
         return id;
     }
 
-
-
     @Override
     public void setId(UUID id) {
         this.id = id;
+    }
+
+    @Override
+    public void setId(String id) {
+        this.id = UUID.fromString(id); // Convert String to UUID
     }
 
     @Override
@@ -73,11 +81,6 @@ public class Reading implements IReading {
     @Override
     public Double getMeterCount() {
         return meterCount;
-    }
-
-    @Override
-    public void setId(String id) {
-
     }
 
     @Override
@@ -115,14 +118,23 @@ public class Reading implements IReading {
         this.comment = comment;
     }
 
+    public String getCustomerId() {
+        return customerId; // Getter for customerId
+    }
+
+    public void setCustomerId(String customerId) {
+        this.customerId = customerId; // Setter for customerId
+    }
+
     @Override
     public ICustomer getCustomer() {
-        return customer;
+        // Assuming you have a method to fetch the customer based on customerId
+        return CustomerDAO.getInstance().read(UUID.fromString(customerId)); // Fetch customer using DAO
     }
 
     @Override
     public void setCustomer(ICustomer customer) {
-        this.customer = customer;
+        this.customerId = customer.getId().toString(); // Set customerId from the customer object
     }
 
     @Override

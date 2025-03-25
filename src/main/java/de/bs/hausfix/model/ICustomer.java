@@ -1,5 +1,7 @@
 package de.bs.hausfix.model;
 
+import jakarta.validation.constraints.NotNull;
+
 import java.time.LocalDate;
 
 public interface ICustomer extends IID {
@@ -17,7 +19,7 @@ public interface ICustomer extends IID {
     String getFirstName();
     String getLastName();
     LocalDate getBirthDate();
-    Gender getGender();
+    @NotNull Gender getGender();
 
     // Neue Getter für die zusätzlichen Felder
     String getStreet();

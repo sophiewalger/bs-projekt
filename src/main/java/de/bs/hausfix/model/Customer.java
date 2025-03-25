@@ -23,7 +23,7 @@ public class Customer implements ICustomer {
     private String lastName;
 
     @JsonProperty("birthDate")
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd.MM.yyyy")
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
     private LocalDate birthDate;
 
     @JsonProperty("gender")
@@ -84,7 +84,7 @@ public class Customer implements ICustomer {
     }
 
     @Override
-    public Gender getGender() {
+    public @NotNull Gender getGender() {
         return gender;
     }
 

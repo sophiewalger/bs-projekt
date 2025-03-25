@@ -62,6 +62,8 @@ public class DatabaseConnection implements IDatabaseConnection {
                 id CHAR(36) PRIMARY KEY,
                 firstname VARCHAR(50),
                 lastname VARCHAR(50),
+                birthdate DATE,
+                gender VARCHAR(1),
                 street VARCHAR(100),
                 housenumber VARCHAR(10),
                 postcode VARCHAR(10),
@@ -72,13 +74,17 @@ public class DatabaseConnection implements IDatabaseConnection {
 
             // Erstelle die readings Tabelle mit UUID und Fremdschlüssel zu customers
             String createReadingsTable = """
-            CREATE TABLE IF NOT EXISTS readings (
-                id CHAR(36) PRIMARY KEY,
-                customer_id CHAR(36),
-                reading_date DATE,
-                meter_reading INT,
-                FOREIGN KEY (customer_id) REFERENCES customers(id)
-            )
+                    CREATE TABLE IF NOT EXISTS readings (
+                        id CHAR(36) PRIMARY KEY,
+                        meter_reading VARCHAR(255) NOT NULL, 
+                        kind_of_meter VARCHAR(20) NOT NULL, 
+                        meter_count DOUBLE NOT NULL, 
+                        reading_date DATE, 
+                        substitute BOOLEAN, 
+                        comment TEXT, 
+                        customer_id CHAR(36), 
+                        FOREIGN KEY (customer_id) REFERENCES customers(id)
+                    );
             """;
             stmt.execute(createReadingsTable);
 

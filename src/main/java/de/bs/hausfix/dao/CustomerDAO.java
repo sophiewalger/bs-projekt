@@ -29,7 +29,7 @@ public class CustomerDAO {
     }
 
     public void create(ICustomer customer) {
-        String sql = "INSERT INTO customers (id, firstname, lastname, street, housenumber, postcode, city) VALUES (?, ?, ?, ?, ?, ?, ?)";
+        String sql = "INSERT INTO customers (id, firstname, lastname, birthdate , gender, street, housenumber, postcode, city) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
         try (PreparedStatement stmt = connection.prepareStatement(sql)) {
             if (customer.getId() == null) {
@@ -39,10 +39,12 @@ public class CustomerDAO {
             stmt.setString(1, customer.getId().toString());
             stmt.setString(2, customer.getFirstName());
             stmt.setString(3, customer.getLastName());
-            stmt.setString(4, customer.getStreet());
-            stmt.setString(5, customer.getHouseNumber());
-            stmt.setString(6, customer.getPostcode());
-            stmt.setString(7, customer.getCity());
+            stmt.setDate(  4, java.sql.Date.valueOf(customer.getBirthDate()));
+            stmt.setString(5, customer.getGender().name());
+            stmt.setString(6, customer.getStreet());
+            stmt.setString(7, customer.getHouseNumber());
+            stmt.setString(8, customer.getPostcode());
+            stmt.setString(9, customer.getCity());
 
             stmt.executeUpdate();
         } catch (SQLException e) {
@@ -58,7 +60,33 @@ public class CustomerDAO {
 
             ResultSet rs = stmt.executeQuery();
             if (rs.next()) {
-                return mapResultSetToCustomer(rs);
+                // Erstellen und Befüllen des Customer-Objekts direkt hier
+                Customer customer = new Customer();
+                customer.setId(UUID.fromString(rs.getString("id")));
+                customer.setFirstName(rs.getString("firstname"));
+                customer.setLastName(rs.getString("lastname"));
+
+                // Birthdate konvertieren
+                if (rs.getDate("birthdate") != null) {
+                    customer.setBirthDate(rs.getDate("birthdate").toLocalDate());
+                } else {
+                    customer.setBirthDate(null);
+                }
+
+                // Gender konvertieren
+                String genderString = rs.getString("gender");
+                if (genderString != null) {
+                    customer.setGender(Gender.valueOf(genderString)); // Stellen Sie sicher, dass die Enum-Werte übereinstimmen
+                } else {
+                    customer.setGender(null);
+                }
+
+                customer.setStreet(rs.getString("street"));
+                customer.setHouseNumber(rs.getString("housenumber"));
+                customer.setPostcode(rs.getString("postcode"));
+                customer.setCity(rs.getString("city"));
+
+                return customer;
             }
         } catch (SQLException e) {
             throw new RuntimeException("Failed to read customer", e);
@@ -74,7 +102,33 @@ public class CustomerDAO {
              ResultSet rs = stmt.executeQuery(sql)) {
 
             while (rs.next()) {
-                customers.add(mapResultSetToCustomer(rs));
+                // Erstellen und Befüllen des Customer-Objekts direkt hier
+                Customer customer = new Customer();
+                customer.setId(UUID.fromString(rs.getString("id")));
+                customer.setFirstName(rs.getString("firstname"));
+                customer.setLastName(rs.getString("lastname"));
+
+                // Birthdate konvertieren
+                if (rs.getDate("birthdate") != null) {
+                    customer.setBirthDate(rs.getDate("birthdate").toLocalDate());
+                } else {
+                    customer.setBirthDate(null);
+                }
+
+                // Gender konvertieren
+                String genderString = rs.getString("gender");
+                if (genderString != null) {
+                    customer.setGender(Gender.valueOf(genderString)); // Stellen Sie sicher, dass die Enum-Werte übereinstimmen
+                } else {
+                    customer.setGender(null);
+                }
+
+                customer.setStreet(rs.getString("street"));
+                customer.setHouseNumber(rs.getString("housenumber"));
+                customer.setPostcode(rs.getString("postcode"));
+                customer.setCity(rs.getString("city"));
+
+                customers.add(customer);
             }
         } catch (SQLException e) {
             throw new RuntimeException("Failed to read customers", e);
@@ -83,20 +137,28 @@ public class CustomerDAO {
     }
 
     public void update(ICustomer customer) {
-        String sql = "UPDATE customers SET firstname = ?, lastname = ?, street = ?, housenumber = ?, postcode = ?, city = ? WHERE id = ?";
+        String sql = "UPDATE customers SET firstname = ?, lastname = ?, birthdate = ?, gender = ?, street = ?, housenumber = ?, postcode = ?, city = ? WHERE id = ?";
 
         try (PreparedStatement stmt = connection.prepareStatement(sql)) {
-            stmt.setString(1, customer.getFirstName());
-            stmt.setString(2, customer.getLastName());
-            stmt.setString(3, customer.getStreet());
-            stmt.setString(4, customer.getHouseNumber());
-            stmt.setString(5, customer.getPostcode());
-            stmt.setString(6, customer.getCity());
-            stmt.setString(7, customer.getId().toString());
+            stmt.setString(1, customer.getId().toString());
+            stmt.setString(2, customer.getFirstName());
+            stmt.setString(3, customer.getLastName());
+            stmt.setDate(4, Date.valueOf(customer.getBirthDate()));
+            stmt.setString(5, customer.getGender().toString());
+            stmt.setString(6, customer.getStreet());
+            stmt.setString(7, customer.getHouseNumber());
+            stmt.setString(8, customer.getPostcode());
+            stmt.setString(9, customer.getCity());
 
             stmt.executeUpdate();
         } catch (SQLException e) {
-            throw new RuntimeException("Failed to update customer", e);
+            // Log the error message and stack trace
+            e.printStackTrace(); // oder verwenden Sie ein Logging-Framework
+            throw new RuntimeException("Failed to update customer: " + e.getMessage(), e);
+        } catch (Exception e) {
+            // Fangen Sie andere unerwartete Ausnahmen ab
+            e.printStackTrace();
+            throw new RuntimeException("An unexpected error occurred: " + e.getMessage(), e);
         }
     }
 

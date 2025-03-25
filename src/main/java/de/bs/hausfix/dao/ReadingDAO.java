@@ -1,9 +1,8 @@
 package de.bs.hausfix.dao;
 
 import de.bs.hausfix.db.DatabaseConnection;
-import de.bs.hausfix.model.IReading;
-import de.bs.hausfix.model.KindOfMeter;
-import de.bs.hausfix.model.Reading;
+import de.bs.hausfix.model.*;
+
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -35,14 +34,14 @@ public class ReadingDAO {
 
         try (PreparedStatement stmt = connection.prepareStatement(sql)) {
             if (reading.getId() == null) {
-                reading.setId(UUID.randomUUID().toString());
+                reading.setId(UUID.randomUUID());
             }
 
             stmt.setString(1, reading.getId().toString());
-            stmt.setDouble(2, reading.getMeterCount()); // Assuming meter_reading corresponds to meter_count
+            stmt.setString(2, reading.getMeterId()); // Assuming meter_reading corresponds to meter_count
             stmt.setString(3, reading.getKindOfMeter().toString());
             stmt.setDouble(4, reading.getMeterCount());
-            stmt.setDate(5, Date.valueOf(reading.getDateOfReading()));
+            stmt.setDate(  5, java.sql.Date.valueOf(reading.getDateOfReading()));
             stmt.setBoolean(6, reading.getSubstitute());
             stmt.setString(7, reading.getComment());
             stmt.setString(8, reading.getCustomer() != null ? reading.getCustomer().getId().toString() : null);
@@ -61,13 +60,30 @@ public class ReadingDAO {
 
             ResultSet rs = stmt.executeQuery();
             if (rs.next()) {
-                return mapResultSetToReading(rs);
+                // Erstellen und Befüllen des Reading-Objekts direkt hier
+                Reading reading = new Reading();
+                reading.setId(UUID.fromString(rs.getString("id")));
+                reading.setMeterId(rs.getString("meter_reading")); // Assuming meter_reading corresponds to meterId
+                reading.setKindOfMeter(KindOfMeter.valueOf(rs.getString("kind_of_meter")));
+                reading.setMeterCount(rs.getDouble("meter_count"));
+                reading.setDateOfReading(rs.getDate("reading_date").toLocalDate());
+                reading.setSubstitute(rs.getBoolean("substitute"));
+                reading.setComment(rs.getString("comment"));
+
+                String customerId = rs.getString("customer_id");
+                if (customerId != null) {
+                    reading.setCustomer(CustomerDAO.getInstance().read(UUID.fromString(customerId)));
+                }
+
+                return reading;
             }
         } catch (SQLException e) {
             throw new RuntimeException("Failed to read reading", e);
         }
         return null;
     }
+
+
 
     public List<IReading> readAll() {
         List<IReading> readings = new ArrayList<>();
@@ -77,7 +93,22 @@ public class ReadingDAO {
              ResultSet rs = stmt.executeQuery(sql)) {
 
             while (rs.next()) {
-                readings.add(mapResultSetToReading(rs));
+                // Create and populate the Reading object directly here
+                Reading reading = new Reading();
+                reading.setId(UUID.fromString(rs.getString("id")));
+                reading.setMeterId(rs.getString("meter_reading")); // Assuming meter_reading corresponds to meterId
+                reading.setKindOfMeter(KindOfMeter.valueOf(rs.getString("kind_of_meter")));
+                reading.setMeterCount(rs.getDouble("meter_count"));
+                reading.setDateOfReading(rs.getDate("reading_date").toLocalDate());
+                reading.setSubstitute(rs.getBoolean("substitute"));
+                reading.setComment(rs.getString("comment"));
+
+                String customerId = rs.getString("customer_id");
+                if (customerId != null) {
+                    reading.setCustomer(CustomerDAO.getInstance().read(UUID.fromString(customerId)));
+                }
+
+                readings.add(reading);
             }
         } catch (SQLException e) {
             throw new RuntimeException("Failed to read readings", e);
@@ -90,10 +121,10 @@ public class ReadingDAO {
                 "reading_date = ?, substitute = ?, comment = ?, customer_id = ? WHERE id = ?";
 
         try (PreparedStatement stmt = connection.prepareStatement(sql)) {
-            stmt.setDouble(1, reading.getMeterCount()); // Assuming meter_reading corresponds to meter_count
+            stmt.setDouble(1, reading.getMeterCount());
             stmt.setString(2, reading.getKindOfMeter().toString());
             stmt.setDouble(3, reading.getMeterCount());
-            stmt.setDate(4, Date.valueOf(reading.getDateOfReading()));
+            stmt.setDate(4, java.sql.Date.valueOf(reading.getDateOfReading()));
             stmt.setBoolean(5, reading.getSubstitute());
             stmt.setString(6, reading.getComment());
             stmt.setString(7, reading.getCustomer() != null ? reading.getCustomer().getId().toString() : null);
@@ -114,24 +145,6 @@ public class ReadingDAO {
         } catch (SQLException e) {
             throw new RuntimeException("Failed to delete reading", e);
         }
-    }
-
-    private IReading mapResultSetToReading(ResultSet rs) throws SQLException {
-        IReading reading = new Reading();
-        reading.setId(rs.getString("id"));
-        reading.setMeterId(rs.getString("meter_reading")); // Change this to meter_reading
-  //      reading.setKindOfMeter(KindOfMeter.valueOf(rs.getString("kind_of_meter")));
-    //    reading.setMeterCount(rs.getDouble("meter_count"));
-        reading.setDateOfReading(rs.getDate("reading_date").toLocalDate()); // Change this to reading_date
-  //      reading.setSubstitute(rs.getBoolean("substitute"));
- //       reading.setComment(rs.getString("comment"));
-
-        String customerId = rs.getString("customer_id");
-        if (customerId != null) {
-            reading.setCustomer(CustomerDAO.getInstance().read(UUID.fromString(customerId)));
-        }
-
-        return reading;
     }
 
     // Methode zum Laden der Datenbank-Eigenschaften
