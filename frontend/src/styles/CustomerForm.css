@@ -1,0 +1,66 @@
+/* CustomerForm.css */
+.form-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1rem;
+    padding: 1.5rem;
+    max-width: 800px;
+    margin: 0 auto;
+}
+
+.form-field {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.form-label {
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: var(--syria-black);
+}
+
+.form-input,
+.form-select {
+    padding: 0.75rem;
+    border: 1px solid var(--syria-gray);
+    border-radius: 0.375rem;
+    font-size: 0.875rem;
+    transition: all 0.15s ease-in-out;
+    width: 100%;
+}
+
+.form-input:focus,
+.form-select:focus {
+    outline: none;
+    border-color: var(--syria-green);
+    box-shadow: 0 0 0 2px rgba(0, 122, 61, 0.1);
+}
+
+.form-submit {
+    background-color: var(--syria-green);
+    color: var(--syria-white);
+    padding: 0.75rem 1.25rem;
+    border: none;
+    border-radius: 0.375rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background-color 0.15s ease-in-out;
+    width: 100%;
+    margin-top: 1rem;
+}
+
+.form-submit:hover {
+    background-color: var(--syria-green-light);
+}
+
+.form-submit:focus {
+    outline: none;
+    box-shadow: 0 0 0 2px rgba(0, 122, 61, 0.5);
+}
+
+@media (max-width: 640px) {
+    .form-grid {
+        grid-template-columns: 1fr;
+    }
+} 

@@ -1,0 +1,4 @@
+tests/ReadingDAOTest.class
+tests/ReadingTest.class
+tests/DatabaseConnectionTest.class
+tests/CustomerDAOTest.class
