@@ -60,9 +60,13 @@ public class Server {
     public static void startServer(String url) {
         System.out.println("Start server: " + url);
         try {
+            // Erstelle die Datenbanktabellen
+            de.bs.hausfix.db.DatabaseConnection.getInstance().createAllTables();
+
             final ResourceConfig rc = new ResourceConfig()
                     .packages(PACKAGE_NAME)
-                    .register(RestApi.class);
+                    .register(RestApi.class)
+                    .register(CORSFilter.class);
             server = JdkHttpServerFactory.createHttpServer(URI.create(url), rc);
             System.out.println("Ready for Requests....");
         } catch (Exception e) {
@@ -71,7 +75,10 @@ public class Server {
         }
     }
 
-    public static void stopServer(){
-        server.stop(0);
+    public static void stopServer() {
+        if (server != null) {
+            server.stop(0);
+            System.out.println("Server gestoppt.");
+        }
     }
 }

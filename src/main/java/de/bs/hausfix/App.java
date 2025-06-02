@@ -30,7 +30,7 @@ public class App {
             // Tabellen erstellen/aktualisieren
             dbConnection.createAllTables();
 
-            Server.startServer("http://localhost:8081/rest");
+            Server.startServer("http://localhost:8081/");
 
         } catch (Exception e) {
             System.err.println("Ein Fehler ist aufgetreten: " + e.getMessage());

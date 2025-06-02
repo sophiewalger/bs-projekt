@@ -140,25 +140,26 @@ public class CustomerDAO {
         String sql = "UPDATE customers SET firstname = ?, lastname = ?, birthdate = ?, gender = ?, street = ?, housenumber = ?, postcode = ?, city = ? WHERE id = ?";
 
         try (PreparedStatement stmt = connection.prepareStatement(sql)) {
-            stmt.setString(1, customer.getId().toString());
-            stmt.setString(2, customer.getFirstName());
-            stmt.setString(3, customer.getLastName());
-            stmt.setDate(4, Date.valueOf(customer.getBirthDate()));
-            stmt.setString(5, customer.getGender().toString());
-            stmt.setString(6, customer.getStreet());
-            stmt.setString(7, customer.getHouseNumber());
-            stmt.setString(8, customer.getPostcode());
-            stmt.setString(9, customer.getCity());
+            System.out.println("Executing SQL update for customer: " + customer.getId());
+            System.out.println("New values: " + customer.getFirstName() + " " + customer.getLastName());
+            
+            stmt.setString(1, customer.getFirstName());
+            stmt.setString(2, customer.getLastName());
+            stmt.setDate(3, java.sql.Date.valueOf(customer.getBirthDate()));
+            stmt.setString(4, customer.getGender().name());
+            stmt.setString(5, customer.getStreet());
+            stmt.setString(6, customer.getHouseNumber());
+            stmt.setString(7, customer.getPostcode());
+            stmt.setString(8, customer.getCity());
+            stmt.setString(9, customer.getId().toString());
 
-            stmt.executeUpdate();
+            int rowsAffected = stmt.executeUpdate();
+            System.out.println("Rows affected by update: " + rowsAffected);
+            
         } catch (SQLException e) {
-            // Log the error message and stack trace
-            e.printStackTrace(); // oder verwenden Sie ein Logging-Framework
-            throw new RuntimeException("Failed to update customer: " + e.getMessage(), e);
-        } catch (Exception e) {
-            // Fangen Sie andere unerwartete Ausnahmen ab
+            System.err.println("SQL Error during update: " + e.getMessage());
             e.printStackTrace();
-            throw new RuntimeException("An unexpected error occurred: " + e.getMessage(), e);
+            throw new RuntimeException("Failed to update customer: " + e.getMessage(), e);
         }
     }
 
